@@ -2,6 +2,7 @@
 var assert = require('assert');
 var knex = require('knex')({});
 var knexJsonQuery = require('./');
+require('simple-mocha');
 
 
 var conditions= [
