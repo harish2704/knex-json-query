@@ -4,7 +4,7 @@
   "description": "A high-level utility which will will generate Knex query from a single JSON object.",
   "main": "index.js",
   "scripts": {
-    "test": "mocha -R spec"
+    "test": "node test"
   },
   "repository": {
     "type": "git",
