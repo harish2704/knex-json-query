@@ -13,6 +13,16 @@ var conditions= [
     output: 'select * where ("f1" = 10 and "f2" = 20 and "f3" = 30)'
   },
   {
+    name: 'handle simple and conditions',
+    input:{"firstName":[["LIKE","H%"],["OR","hemanth"]]},
+    output: 'select * where (("firstName" LIKE \'H%\' or "firstName" = \'hemanth\'))'
+  },
+  {
+    name: 'handle simple and conditions',
+    input:{ f1: [[ 'A' ],['LIKE', 'B' ]], f2: 20, f3: 30 },
+    output: 'select * where (("f1" = \'A\' and "f1" LIKE \'B\') and "f2" = 20 and "f3" = 30)'
+  },
+  {
     name: 'handle basic operators :: greater-than less-than',
     input:{ f1: ['>', 10], f2: [ '<', 20 ], f3: 30 },
     output: 'select * where ("f1" > 10 and "f2" < 20 and "f3" = 30)'

@@ -6,6 +6,8 @@ var functionOperators = [
   /* ---- */
   'OR',
   'AND',
+  'EQ',
+  '=',
   /* ---- */
   'OR_BETWEEN',
   'OR_IN',
@@ -20,6 +22,8 @@ var functionOperatorMap = {
   /* ---- */
   OR: 'orWhere',
   AND: 'where',
+  EQ: 'where',
+  '=': 'where',
   /* ---- */
   OR_BETWEEN: 'orWhereBetween',
   OR_IN: 'orWhereIn',
@@ -33,19 +37,19 @@ var functionOperatorMap = {
 function addCondition (q, field, val) {
   if (Array.isArray(val[0])) {
     return q.where(function () {
-      return val.forEach(addCondition.bind(null, this, field))
-    })
+      return val.forEach(addCondition.bind(null, this, field));
+    });
   }
   
   if (!Array.isArray(val)) {
-    val = ['AND', field, val ]
+    val = ['AND', field, val ];
   } else if (functionOperators.indexOf(val[0]) !== -1) {
-    val.splice(1, 0, field)
+    val = [ val[0], field ].concat(val.slice(1));
   } else {
-    val = [ 'AND', field ].concat(val)
+    val = [ 'AND', field ].concat(val);
   }
 
-  return q[functionOperatorMap[val[0]]].apply(q, val.slice(1))
+  return q[functionOperatorMap[val[0]]].apply(q, val.slice(1));
 }
 
 
