@@ -1,35 +1,53 @@
 
-var simpleOperators = [
-  'LIKE',
-  '>',
-  '<',
-];
 
 var functionOperators = [
   'BETWEEN',
-  'IN'
+  'IN',
+  /* ---- */
+  'OR',
+  'AND',
+  /* ---- */
+  'OR_BETWEEN',
+  'OR_IN',
+  /* ---- */
+  'AND_BETWEEN',
+  'AND_IN'
 ];
 
 var functionOperatorMap = {
   BETWEEN: 'whereBetween',
-  IN: 'whereIn'
+  IN: 'whereIn',
+  /* ---- */
+  OR: 'orWhere',
+  AND: 'where',
+  /* ---- */
+  OR_BETWEEN: 'orWhereBetween',
+  OR_IN: 'orWhereIn',
+  /* ---- */
+  AND_BETWEEN: 'andWhereBetween',
+  AND_IN: 'andWhereIn'
 };
 
 
 
-function addCondition( q, field, val ){
-  var conditionFn, conditionName;
-  if( !Array.isArray(val)){
-    return q.where( field, val );
+function addCondition (q, field, val) {
+  if (Array.isArray(val[0])) {
+    return q.where(function () {
+      return val.forEach(addCondition.bind(null, this, field))
+    })
   }
-  conditionName = val[0];
-  if( simpleOperators.indexOf( conditionName ) !== -1 ){
-    return q.where.apply(q, [field].concat(val) );
+  
+  if (!Array.isArray(val)) {
+    val = ['AND', field, val ]
+  } else if (functionOperators.indexOf(val[0]) !== -1) {
+    val.splice(1, 0, field)
+  } else {
+    val = [ 'AND', field ].concat(val)
   }
-  if( functionOperators.indexOf(conditionName) !== -1 ){
-    return q[functionOperatorMap[conditionName] ]( field, val.slice(1) );
-  }
+
+  return q[functionOperatorMap[val[0]]].apply(q, val.slice(1))
 }
+
 
 function getWhereCondition( cond ){
   if( Array.isArray(cond) ){
