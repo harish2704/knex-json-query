@@ -18,6 +18,16 @@ var conditions= [
     output: 'select * where (("firstName" LIKE \'H%\' or "firstName" = \'hemanth\'))'
   },
   {
+    name: 'handle regex query: MongoQuery',
+    input:{"firstName":{ $regex: "H*" }},
+    output: 'select * where ("firstName" REGEXP \'H*\')'
+  },
+  {
+    name: 'handle regex query and should omit $options: MongoQuery',
+    input:{"firstName":{ $regex: "H*", $options: 'i' }},
+    output: 'select * where ("firstName" REGEXP \'H*\')'
+  },
+  {
     name: 'handle simple and conditions',
     input:{ f1: [[ 'A' ],['LIKE', 'B' ]], f2: 20, f3: 30 },
     output: 'select * where (("f1" = \'A\' and "f1" LIKE \'B\') and "f2" = 20 and "f3" = 30)'
@@ -64,8 +74,18 @@ var conditions= [
     output: 'select * where (("f1" LIKE 20 or "f1" = 21 or "f1" between 40 and 45) and "f2" = 20 and "f3" = 30)'
   },
   {
+    name: 'handle multiple conditions in one field: MongoQuery',
+    input:{ f1: { $like: 20, $or: 21, $or_between: [ 40, 45 ] }, f2: 20, f3: 30 },
+    output: 'select * where (("f1" LIKE 20 or "f1" = 21 or "f1" between 40 and 45) and "f2" = 20 and "f3" = 30)'
+  },
+  {
     name: 'handle simple or condition with like statement',
     input:[ { f1: ['LIKE',10] }, { f2: 20 }, { f3: 30 } ],
+    output: 'select * where (("f1" LIKE 10) or ("f2" = 20) or ("f3" = 30))'
+  },
+  {
+    name: 'handle simple or condition with like statement: MongoQuery',
+    input:[ { f1: { $like: 10 } }, { f2: 20 }, { f3: 30 } ],
     output: 'select * where (("f1" LIKE 10) or ("f2" = 20) or ("f3" = 30))'
   },
   {
@@ -74,8 +94,18 @@ var conditions= [
     output: 'select * where (("f1" between 50 and 60) or ("f2" = 20) or ("f3" = 30))'
   },
   {
+    name: 'handle simple or condition with between statement :MongoQuery',
+    input:[ { f1: { $between:[50, 60] } }, { f2: 20 }, { f3: 30 } ],
+    output: 'select * where (("f1" between 50 and 60) or ("f2" = 20) or ("f3" = 30))'
+  },
+  {
     name: 'handle simple or condition with in statement',
     input:[ { f1: ['IN',[ 50, 60 ]] }, { f2: 20 }, { f3: 30 } ],
+    output: 'select * where (("f1" in (50, 60)) or ("f2" = 20) or ("f3" = 30))'
+  },
+  {
+    name: 'handle simple or condition with in statement :MongoQuery',
+    input:[ { f1: {$in:[ 50, 60 ]} }, { f2: 20 }, { f3: 30 } ],
     output: 'select * where (("f1" in (50, 60)) or ("f2" = 20) or ("f3" = 30))'
   },
 ];

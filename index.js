@@ -23,9 +23,22 @@ var functionOperatorMap = {
   AND_NOTNULL: 'andWhereNotNull',
 };
 
+var aliases = {
+  REGEX: 'REGEXP'
+};
+
 
 
 function addCondition (q, field, val) {
+  if( val.constructor.name === 'Object' ){
+    delete val.$options;
+    val = Object.keys(val).map( function(key){
+      return [ key.slice(1).toUpperCase(), val[key] ];
+    });
+    if( val.length === 1){
+      val = val[0];
+    }
+  }
   if (Array.isArray(val[0])) {
     return q.where(function () {
       return val.forEach(addCondition.bind(null, this, field));
@@ -33,13 +46,18 @@ function addCondition (q, field, val) {
   }
   
   if (!Array.isArray(val)) {
+    // Simple string or number value
     val = ['AND', field, val ];
-  } else if (functionOperatorMap.hasOwnProperty( val[0] ) ) {
-    val = [ val[0], field ].concat(val.slice(1));
   } else {
-    val = [ 'AND', field ].concat(val);
+    val[0] = aliases[ val[0] ] || val[0];
+    if (functionOperatorMap.hasOwnProperty( val[0] ) ) {
+      // SQL operator
+      val = [ val[0], field ].concat(val.slice(1));
+    } else {
+      // other cases like ( '>', '10' ) Greater than 10
+      val = [ 'AND', field ].concat(val);
+    }
   }
-
   return q[functionOperatorMap[val[0]]].apply(q, val.slice(1));
 }
 

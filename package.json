@@ -1,6 +1,6 @@
 {
   "name": "knex-json-query",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "A high-level utility which will will generate Knex query from a single JSON object.",
   "main": "index.js",
   "scripts": {
