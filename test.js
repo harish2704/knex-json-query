@@ -1,6 +1,6 @@
 /* global describe, it  */
 var assert = require('assert');
-var knex = require('knex')({});
+var knex = require('knex')({client: 'sqlite' });
 var knexJsonQuery = require('./');
 require('simple-mocha');
 
