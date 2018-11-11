@@ -4,6 +4,8 @@
 var functionOperatorMap = {
   BETWEEN: 'whereBetween',
   IN: 'whereIn',
+  NIN: 'whereNotIn',
+  NOTIN: 'whereNotIn',
   ISNULL: 'whereNull',
   NOTNULL: 'whereNotNull',
   /* ---- */
@@ -14,11 +16,13 @@ var functionOperatorMap = {
   /* ---- */
   OR_BETWEEN: 'orWhereBetween',
   OR_IN: 'orWhereIn',
+  OR_NOTIN: 'orWhereNotIn',
   OR_ISNULL: 'orWhereNull',
   IR_NOTNULL: 'orWhereNotNull',
   /* ---- */
   AND_BETWEEN: 'andWhereBetween',
   AND_IN: 'andWhereIn',
+  AND_NOTIN: 'andWhereNotIn',
   AND_ISNULL: 'andWhereNull',
   AND_NOTNULL: 'andWhereNotNull',
 };
