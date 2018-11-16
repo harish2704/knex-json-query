@@ -25,6 +25,8 @@ var functionOperatorMap = {
   AND_NOTIN: 'andWhereNotIn',
   AND_ISNULL: 'andWhereNull',
   AND_NOTNULL: 'andWhereNotNull',
+  /* ---- */
+  RAW: 'whereRaw'
 };
 
 var aliases = {
@@ -62,7 +64,8 @@ function addCondition (q, field, val) {
       val = [ 'AND', field ].concat(val);
     }
   }
-  return q[functionOperatorMap[val[0]]].apply(q, val.slice(1));
+  var args = val[0] === 'RAW' ? [ '"'+val[1]+'" ' + val[2] ] : val.slice(1)
+  return q[functionOperatorMap[val[0]]].apply(q, args);
 }
 
 
