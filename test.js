@@ -138,6 +138,11 @@ var conditions= [
     input: [ { f1: { $raw: '@> ANY(ARRAY(1,2,3))' } }, { f2: 20 } ],
     output: 'select * where (("f1" @> ANY(ARRAY(1,2,3))) or ("f2" = 20))'
   },
+  {
+    name: 'handle simple or condition with conditional array',
+    input: { f1: [['ILIKE', 'awesome'], ['OR_ILIKE', '%super%'] ] },
+    output: 'select * where (("f1" ILIKE \'awesome\' or "f1" ILIKE \'%super%\'))'
+  }
 ];
 
 
