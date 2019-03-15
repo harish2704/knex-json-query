@@ -72,6 +72,11 @@ var conditions= [
     input:{ f1: ['NOTIN', [ 50, 60 ] ], f2: 20, f3: 30 },
     output: 'select * where ("f1" not in (50, 60) and "f2" = 20 and "f3" = 30)'
   },
+  {
+    name: 'handle simple and condition with raw statement',
+    input: { f1: { $raw: '@> ANY(ARRAY(1,2,3))' }, f2: 20 },
+    output: 'select * where ("f1" @> ANY(ARRAY(1,2,3)) and "f2" = 20)'
+  },
   /* -----------Tests for or conditions---------- */
   {
     name: 'handle simple or condition',
@@ -125,9 +130,19 @@ var conditions= [
   },
   {
     name: 'handle simple or condition with nin statement :MongoQuery',
-    input:[ { f1: {$nin:[ 50, 60 ]} }, { f2: 20 }, { f3: 30 } ],
+    input:[ { f1: { $nin: [ 50, 60 ] } }, { f2: 20 }, { f3: 30 } ],
     output: 'select * where (("f1" not in (50, 60)) or ("f2" = 20) or ("f3" = 30))'
   },
+  {
+    name: 'handle simple or condition with raw statement',
+    input: [ { f1: { $raw: '@> ANY(ARRAY(1,2,3))' } }, { f2: 20 } ],
+    output: 'select * where (("f1" @> ANY(ARRAY(1,2,3))) or ("f2" = 20))'
+  },
+  {
+    name: 'handle simple or condition with conditional array',
+    input: { f1: [['ILIKE', 'awesome'], ['OR_ILIKE', '%super%'] ] },
+    output: 'select * where (("f1" ILIKE \'awesome\' or "f1" ILIKE \'%super%\'))'
+  }
 ];
 
 

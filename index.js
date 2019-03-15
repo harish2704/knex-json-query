@@ -25,6 +25,10 @@ var functionOperatorMap = {
   AND_NOTIN: 'andWhereNotIn',
   AND_ISNULL: 'andWhereNull',
   AND_NOTNULL: 'andWhereNotNull',
+  /* ---- */
+  RAW: 'whereRaw',
+  OR_RAW: 'orWhereRaw',
+  AND_RAW: 'whereRaw',
 };
 
 var aliases = {
@@ -58,11 +62,19 @@ function addCondition (q, field, val) {
       // SQL operator
       val = [ val[0], field ].concat(val.slice(1));
     } else {
-      // other cases like ( '>', '10' ) Greater than 10
-      val = [ 'AND', field ].concat(val);
+      // Cases when we have something like 'OR_ILIKE' or 'AND_@>'
+      var operators = /(\w+)_(\w+)/.exec(val[0])
+      var operatorsExist = operators && operators.constructor === Array && operators.length >= 3
+      if (operatorsExist) {
+        val = [operators[1], field].concat([operators[2]], val.slice(1));
+      } else {
+        // other cases like ( '>', '10' ) Greater than 10
+        val = [ 'AND', field ].concat(val);
+      }
     }
   }
-  return q[functionOperatorMap[val[0]]].apply(q, val.slice(1));
+  var args = val[0].includes('RAW') ? [ '"'+val[1]+'" ' + val[2] ] : val.slice(1)
+  return q[functionOperatorMap[val[0]]].apply(q, args);
 }
 
 
