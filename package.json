@@ -22,7 +22,7 @@
   },
   "homepage": "https://github.com/harish2704/knex-json-query#readme",
   "devDependencies": {
-    "knex": "^0.12.6",
+    "knex": "^0.20.10",
     "simple-mocha": "0.0.9"
   }
 }
