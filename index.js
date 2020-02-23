@@ -38,6 +38,12 @@ var aliases = {
 
 
 function addCondition (q, field, val) {
+  if( field === '$or' ){
+    return q.orWhere( getWhereCondition( val ))
+  }
+  if( field === '$and' ){
+    return q.where( getWhereCondition( val ))
+  }
   if( val.constructor.name === 'Object' ){
     delete val.$options;
     val = Object.keys(val).map( function(key){

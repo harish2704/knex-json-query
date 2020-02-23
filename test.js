@@ -79,6 +79,12 @@ var conditions= [
   },
   /* -----------Tests for or conditions---------- */
   {
+    name: 'handle $and grouping',
+    input:{ f1: 10, f2: 20, f3: 30, $and: [ { f4: 55 }, { f5: 66} ] },
+    output: 'select * where ("f1" = 10 and "f2" = 20 and "f3" = 30 and (("f4" = 55) or ("f5" = 66)))'
+  },
+  /* -----------Tests for or conditoins---------- */
+  {
     name: 'handle simple or condition',
     input:[ { f1: 10 }, { f2: 20 }, { f3: 30 } ],
     output: 'select * where (("f1" = 10) or ("f2" = 20) or ("f3" = 30))'
@@ -142,7 +148,12 @@ var conditions= [
     name: 'handle simple or condition with conditional array',
     input: { f1: [['ILIKE', 'awesome'], ['OR_ILIKE', '%super%'] ] },
     output: 'select * where (("f1" ILIKE \'awesome\' or "f1" ILIKE \'%super%\'))'
-  }
+  },
+  {
+    name: 'handle $or grouping',
+    input:{ f1: 10, f2: 20, f3: 30, $or: [ { f4: 55 }, { f5: 66} ] },
+    output: 'select * where ("f1" = 10 and "f2" = 20 and "f3" = 30 or (("f4" = 55) or ("f5" = 66)))'
+  },
 ];
 
 
