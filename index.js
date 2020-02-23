@@ -1,5 +1,4 @@
-
-
+"use strict";
 
 var functionOperatorMap = {
   BETWEEN: 'whereBetween',
