@@ -1,6 +1,6 @@
 /* global describe, it  */
 var assert = require('assert');
-var knex = require('knex')({client: 'sqlite' });
+var knex = require('knex')({client: 'pg' });
 var knexJsonQuery = require('./');
 require('simple-mocha');
 
@@ -14,23 +14,23 @@ var conditions= [
   },
   {
     name: 'handle simple and conditions',
-    input:{"firstName":[["LIKE","H%"],["OR","hemanth"]]},
-    output: 'select * where (("firstName" LIKE \'H%\' or "firstName" = \'hemanth\'))'
+    input:{"firstName":[["like","H%"],["OR","hemanth"]]},
+    output: 'select * where (("firstName" like \'H%\' or "firstName" = \'hemanth\'))'
   },
   {
     name: 'handle regex query: MongoQuery',
     input:{"firstName":{ $regex: "H*" }},
-    output: 'select * where ("firstName" REGEXP \'H*\')'
+    output: 'select * where ("firstName" regexp \'H*\')'
   },
   {
     name: 'handle regex query and should omit $options: MongoQuery',
     input:{"firstName":{ $regex: "H*", $options: 'i' }},
-    output: 'select * where ("firstName" REGEXP \'H*\')'
+    output: 'select * where ("firstName" regexp \'H*\')'
   },
   {
     name: 'handle simple and conditions',
-    input:{ f1: [[ 'A' ],['LIKE', 'B' ]], f2: 20, f3: 30 },
-    output: 'select * where (("f1" = \'A\' and "f1" LIKE \'B\') and "f2" = 20 and "f3" = 30)'
+    input:{ f1: [[ 'A' ],['like', 'B' ]], f2: 20, f3: 30 },
+    output: 'select * where (("f1" = \'A\' and "f1" like \'B\') and "f2" = 20 and "f3" = 30)'
   },
   {
     name: 'handle basic operators :: greater-than less-than',
@@ -49,13 +49,13 @@ var conditions= [
   },
   {
     name: 'handle multiple conditions in one field',
-    input:{ f1: [ [ 'LIKE', 20 ], 21, [ 'AND_BETWEEN', [ 40, 45 ] ] ], f2: 20, f3: 30 },
-    output: 'select * where (("f1" LIKE 20 and "f1" = 21 and "f1" between 40 and 45) and "f2" = 20 and "f3" = 30)'
+    input:{ f1: [ [ 'like', 20 ], 21, [ 'AND_BETWEEN', [ 40, 45 ] ] ], f2: 20, f3: 30 },
+    output: 'select * where (("f1" like 20 and "f1" = 21 and "f1" between 40 and 45) and "f2" = 20 and "f3" = 30)'
   },
   {
     name: 'handle simple and condition with like statement',
-    input:{ f1: [ 'LIKE', 20 ], f2: 20, f3: 30 },
-    output: 'select * where ("f1" LIKE 20 and "f2" = 20 and "f3" = 30)'
+    input:{ f1: [ 'like', 20 ], f2: 20, f3: 30 },
+    output: 'select * where ("f1" like 20 and "f2" = 20 and "f3" = 30)'
   },
   {
     name: 'handle simple and condition with between statement',
@@ -91,23 +91,23 @@ var conditions= [
   },
   {
     name: 'handle multiple conditions in one field',
-    input:{ f1: [ [ 'LIKE', 20 ], [ 'OR', 21 ], [ 'OR_BETWEEN', [ 40, 45 ] ] ], f2: 20, f3: 30 },
-    output: 'select * where (("f1" LIKE 20 or "f1" = 21 or "f1" between 40 and 45) and "f2" = 20 and "f3" = 30)'
+    input:{ f1: [ [ 'like', 20 ], [ 'OR', 21 ], [ 'OR_BETWEEN', [ 40, 45 ] ] ], f2: 20, f3: 30 },
+    output: 'select * where (("f1" like 20 or "f1" = 21 or "f1" between 40 and 45) and "f2" = 20 and "f3" = 30)'
   },
   {
     name: 'handle multiple conditions in one field: MongoQuery',
     input:{ f1: { $like: 20, $or: 21, $or_between: [ 40, 45 ] }, f2: 20, f3: 30 },
-    output: 'select * where (("f1" LIKE 20 or "f1" = 21 or "f1" between 40 and 45) and "f2" = 20 and "f3" = 30)'
+    output: 'select * where (("f1" like 20 or "f1" = 21 or "f1" between 40 and 45) and "f2" = 20 and "f3" = 30)'
   },
   {
     name: 'handle simple or condition with like statement',
-    input:[ { f1: ['LIKE',10] }, { f2: 20 }, { f3: 30 } ],
-    output: 'select * where (("f1" LIKE 10) or ("f2" = 20) or ("f3" = 30))'
+    input:[ { f1: ['like',10] }, { f2: 20 }, { f3: 30 } ],
+    output: 'select * where (("f1" like 10) or ("f2" = 20) or ("f3" = 30))'
   },
   {
     name: 'handle simple or condition with like statement: MongoQuery',
     input:[ { f1: { $like: 10 } }, { f2: 20 }, { f3: 30 } ],
-    output: 'select * where (("f1" LIKE 10) or ("f2" = 20) or ("f3" = 30))'
+    output: 'select * where (("f1" like 10) or ("f2" = 20) or ("f3" = 30))'
   },
   {
     name: 'handle simple or condition with between statement',
@@ -146,8 +146,8 @@ var conditions= [
   },
   {
     name: 'handle simple or condition with conditional array',
-    input: { f1: [['ILIKE', 'awesome'], ['OR_ILIKE', '%super%'] ] },
-    output: 'select * where (("f1" ILIKE \'awesome\' or "f1" ILIKE \'%super%\'))'
+    input: { f1: [['ilike', 'awesome'], ['OR_ilike', '%super%'] ] },
+    output: 'select * where (("f1" ilike \'awesome\' or "f1" ilike \'%super%\'))'
   },
   {
     name: 'handle $or grouping',
