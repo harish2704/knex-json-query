@@ -164,9 +164,8 @@ testData.pg.conditions = [
 
 testData.mysql.knex = Knex({client: 'mysql' });
 testData.mysql.conditions = [
-  /* -----------Tests for and conditions---------- */
   {
-    name: 'handle "and" condition with raw statement',
+    name: 'Mysql: handle "and" condition with raw statement',
     input: { f1: { $raw: '< `use_limit`' }, f2: 20 },
     output: 'select * where (`f1` < `use_limit` and `f2` = 20)'
   },
@@ -178,14 +177,14 @@ Object.keys( testData ).forEach(function(driver){
   var conditions = data.conditions;
   var knex = data.knex;
 
-describe('SQL query generation from json query', function(){
-  conditions.forEach(function(v){
-    it( 'should ' + v.name , function(){
-      var expectedOut = knex.where( knexJsonQuery(v.input) ) + '';
-      assert.equal( v.output, expectedOut );
+  describe('SQL query generation from json query', function(){
+    conditions.forEach(function(v){
+      it( 'should ' + v.name , function(){
+        var expectedOut = knex.where( knexJsonQuery(v.input) ) + '';
+        assert.equal( v.output, expectedOut );
+      });
     });
   });
-});
 
 })
 
