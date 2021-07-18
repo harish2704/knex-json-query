@@ -57,7 +57,7 @@ function addCondition (q, field, val) {
       return val.forEach(addCondition.bind(null, this, field));
     });
   }
-  
+
   if (!Array.isArray(val)) {
     // Simple string or number value
     val = ['AND', field, val ];
@@ -78,7 +78,7 @@ function addCondition (q, field, val) {
       }
     }
   }
-  var args = val[0].includes('RAW') ? [ '"'+val[1]+'" ' + val[2] ] : val.slice(1)
+  var args = val[0].includes('RAW') ? [ q.client.raw('??', val[1]) + ' ' + val[2] ] : val.slice(1);
   return q[functionOperatorMap[val[0]]].apply(q, args);
 }
 
