@@ -1,11 +1,16 @@
 /* global describe, it  */
 var assert = require('assert');
-var knex = require('knex')({client: 'pg' });
+var Knex = require('knex');
 var knexJsonQuery = require('./');
 require('simple-mocha');
 
+var testData = {
+  mysql:{},
+  pg:{},
+};
 
-var conditions= [
+testData.pg.knex = Knex({client: 'pg' });
+testData.pg.conditions = [
   /* -----------Tests for and conditions---------- */
   {
     name: 'handle simple and conditions',
@@ -157,6 +162,22 @@ var conditions= [
 ];
 
 
+testData.mysql.knex = Knex({client: 'mysql' });
+testData.mysql.conditions = [
+  /* -----------Tests for and conditions---------- */
+  {
+    name: 'handle "and" condition with raw statement',
+    input: { f1: { $raw: '< `use_limit`' }, f2: 20 },
+    output: 'select * where (`f1` < `use_limit` and `f2` = 20)'
+  },
+]
+
+
+Object.keys( testData ).forEach(function(driver){
+  var data = testData[driver];
+  var conditions = data.conditions;
+  var knex = data.knex;
+
 describe('SQL query generation from json query', function(){
   conditions.forEach(function(v){
     it( 'should ' + v.name , function(){
@@ -165,4 +186,6 @@ describe('SQL query generation from json query', function(){
     });
   });
 });
+
+})
 
